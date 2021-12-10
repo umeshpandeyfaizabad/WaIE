@@ -18,7 +18,8 @@ class ApiCall {
             return suspendCancellableCoroutine { continuation ->
                 try {
                     val reader: BufferedReader
-                    val url = URL(ProjectConstant.base_url + ProjectConstant.end_point + ProjectConstant.api_key)
+                    val url = URL(ProjectConstant.base_url + ProjectConstant.end_point
+                            + "?api_key=" + ProjectConstant.api_key)
 
                     with(url.openConnection() as HttpURLConnection) {
                         requestMethod = "GET"
