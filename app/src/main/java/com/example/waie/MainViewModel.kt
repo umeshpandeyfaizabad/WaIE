@@ -37,7 +37,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
  fun getData() {
   viewModelScope.launch(Dispatchers.IO) {
    val response = ApiCall.request()
+
    withContext(Dispatchers.Main) {
+    // call to UI thread
 
     data.value = getResponse(JSONObject(response))
 
@@ -94,6 +96,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
   return imageEncoded
  }
 
+ // method for base64 to bitmap
+ fun decodeBase64(input: String?): Bitmap? {
+  val decodedByte = Base64.decode(input, 0)
+  return BitmapFactory
+   .decodeByteArray(decodedByte, 0, decodedByte.size)
+ }
 
  fun savePlanetaryData(date: String, title: String, explanation: String){
   val editor: SharedPreferences.Editor? = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE)?.edit()?.apply {
@@ -104,6 +112,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
   }
  }
 
+ fun savePlanetaryImage(bitmap: Bitmap){
+  val editor: SharedPreferences.Editor? = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE)?.edit()?.apply {
+   putString("IMAGE", encodeTobase64(bitmap))
+   commit()
+  }
+ }
 
  fun checkForInternet(context: Context): Boolean {
 
@@ -123,5 +137,4 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
    @Suppress("DEPRECATION")
    return networkInfo.isConnected
   }
- }
-}
+ }}
